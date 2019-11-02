@@ -1,0 +1,25 @@
+---  
+- hosts: all
+
+  tasks:
+  - name: install pip.
+    apt: 
+      name: python-pip
+
+  - name: install docker.
+    pip: 
+      name: docker
+
+  - name: remove the mongo docker images  
+    docker_image: 
+      name: "{{ item }}"
+      state: absent
+    with_items: 
+      - ranchercharts/bitnami-mongodb:4.0.12-debian-9-r5 
+      - ranchercharts/bitnami-mongodb-exporter:0.8.0-debian-9-r4
+      - k8s.gcr.io/mongodb-install:0.6   
+  
+  - name: remove every file with the word mongo.
+    shell: rm -rf $(find / -iname *mongo*)
+      
+
